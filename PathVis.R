@@ -9,3 +9,14 @@ if (!requireNamespace("biomaRt", quietly =TRUE))
 
 
 
+MergeDfsbyKEGGid <- function(dfDEG, dfvar){
+    newrownames <- union(rownames(dfDEG) , rownames(dfvar) )
+    MergedDf <- data.frame( theunion=newrownames  , var=rep(0, length(newrownames) ) )
+    rownames(MergedDf) <- MergedDf$theunion
+    MergedDf$log2FoldChange <- rep(NA, dim(MergedDf)[1] )
+    MergedDf$log2FoldChange[which(rownames(MergedDf) %in% rownames(dfDEG) )] <- dfDEG[ ,  "log2FoldChange"]
+    MergedDf$var[which(rownames(MergedDf) %in% rownames(dfvar) )] <- dfvar[ ,  "var"]
+    MergedDf <- MergedDf[,-1]
+    MergedDf <- MergedDf[, c(2,1)]
+    return(MergedDf)
+}
